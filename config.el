@@ -25,6 +25,12 @@
   :width 'normal
   :weight 'normal)
 
+
+(defun on-after-init ()
+  (unless (display-graphic-p (selected-frame))
+    (set-face-background 'default "unspecified-bg" (selected-frame))))
+
+(add-hook 'window-setup-hook 'on-after-init)
 (set-frame-parameter nil 'alpha-background '75)
 (add-to-list 'default-frame-alist '(alpha-background . 75))
 
@@ -36,6 +42,7 @@
   :if (display-graphic-p))
 
 (use-package all-the-icons-completion
+  :if (display-graphic-p)
   :after all-the-icons
   :hook (marginalia-mode . all-the-icons-completion-mode))
 
@@ -99,8 +106,8 @@
   (dashboard-icon-type 'all-the-icons)
   (dashboard-startup-banner 3)
   (dashboard-set-footer nil)
-  (dashboard-set-file-icons t)
-  (dashboard-set-heading-icons t)
+  (dashboard-set-file-icons (display-graphic-p))
+  (dashboard-set-heading-icons (display-graphic-p))
   (dashboard-agenda-time-string-format "%a %e de %b %t")
   (dashboard-items '((agenda . 10) (recents . 5) (bookmarks . 3)))
   (dashboard-agenda-prefix-format "%i %s")
@@ -130,8 +137,10 @@
       '((daily today require-timed)
         ()
         "......" "----------------"))
-  (org-agenda-category-icon-alist
-   `(
-     ("Trabalho" ,(list (all-the-icons-material "work")) nil nil :ascent center)
-     ("Pessoal" ,(list (all-the-icons-material "account_box")) nil nil :ascent center)
-     ("Faculdade" ,(list (all-the-icons-material "school")) nil nil :ascent center))))
+  :config
+  (when (display-graphic-p)
+      (setq org-agenda-category-icon-alist
+       `(
+	 ("Trabalho" ,(list (all-the-icons-material "work")) nil nil :ascent center)
+	 ("Pessoal" ,(list (all-the-icons-material "account_box")) nil nil :ascent center)
+	 ("Faculdade" ,(list (all-the-icons-material "school")) nil nil :ascent center)))))
