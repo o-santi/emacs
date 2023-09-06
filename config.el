@@ -81,8 +81,7 @@
 (use-package flycheck
   :config (global-flycheck-mode)
   :custom
-  (flycheck-pylintrc "~/mx/mixrank/etc/pylint/default.rc")
-  (flycheck-python-pylint-executable "@pylint@/bin/pylint"))
+  (flycheck-pylintrc "~/mx/mixrank/etc/pylint/default.rc"))
 
 (use-package nix-mode
   :hook (nix-mode . eglot-ensure))
