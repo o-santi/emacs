@@ -66,12 +66,15 @@
   :config (global-set-key (kbd "C-h v") #'helpful-variable)
   :config (global-set-key (kbd "C-h x") #'helpful-command))
 
+(use-package which-key
+  :config (which-key-mode))
+
 (use-package eglot
   :config (add-to-list 'eglot-server-programs '(nix-mode . ("nil"))))
 
 (use-package corfu
   :config (global-corfu-mode)
-  :custom 
+  :custom
   (corfu-auto t)
   (corfu-cycle t)
   (corfu-separator ?\s)
