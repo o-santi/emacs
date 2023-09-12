@@ -14,12 +14,13 @@ let
   }).parseOrgModeBabelElisp;
   lisp-to-str = (pkgs.callPackage ./sexp.nix pkgs).sexp-list-to-str "\n";
   org-tangle = org-file: (lisp-to-str (from-org-mode (builtins.readFile org-file)));
+  org-file = ./README.org;
 in
 (pkgs.emacsWithPackagesFromUsePackage {
   package = pkgs.emacs-git.override { withGTK3 = true; };
-  config = ./README.org;
+  config = org-file;
   alwaysEnsure = true;
-  defaultInitFile = pkgs.writeText "default.el" (org-tangle ./README.org);
+  defaultInitFile = pkgs.writeText "default.el" (org-tangle org-file);
   extraEmacsPackages = epkgs: with epkgs; [
     (treesit-grammars.with-grammars (g: with g; [
       tree-sitter-rust
