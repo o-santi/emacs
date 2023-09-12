@@ -48,7 +48,7 @@ Remove background on terminal, and add transparency on GUI
 
 (add-hook 'window-setup-hook 'on-after-init)
 (set-frame-parameter nil 'alpha-background 90)
-(add-to-list 'default-frame-alist (cons 'alpha-background 90))
+(add-to-list 'default-frame-alist '(alpha-background . 90))
 #+end_src
 
 * Utility
@@ -63,7 +63,8 @@ This is currently disabled because I can't for the life of me make all-the-icons
   :disable
   :if (display-graphic-p)
   :after all-the-icons
-  :config (add-hook 'marginalia-mode-hook #'all-the-icons-completion-mode))
+  :hook (marginalia-mode . all-the-icons-completion-mode))
+
 #+end_src
 ** Magit
 Configurations for magit
@@ -111,11 +112,15 @@ Better help defaults
 (use-package which-key
   :config (which-key-mode))
 #+end_src
+** Bind key
+#+begin_src emacs-lisp :tangle yes
+(use-package bind-key)
+#+end_src
 ** Eglot
 Language server support. Already comes installed but used to configure additional language servers.
 #+begin_src emacs-lisp :tangle yes
 (use-package eglot
-  :config (add-to-list 'eglot-server-programs (cons 'nix-mode '("nil"))))
+  :config (add-to-list 'eglot-server-programs '(nix-mode . ("nil"))))
 #+end_src
 
 ** Corfu
@@ -145,7 +150,7 @@ I try to mostly use the new Treesitter modes, which comes builtin with the new e
 ** Python
 The package already comes builtin, so we only instantiate it to define the hooks and remap the default package for the new one.
 #+begin_src emacs-lisp :tangle yes
-(add-to-list 'major-mode-remap-alist (cons 'python-mode #'python-ts-mode))
+(add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
 (add-hook 'python-ts-mode-hook #'eglot-ensure)
 (add-hook 'python-ts-mode-hook #'flycheck-mode)
 #+end_src
@@ -153,12 +158,12 @@ The package already comes builtin, so we only instantiate it to define the hooks
 ** Nix
 #+begin_src emacs-lisp :tangle yes
 (use-package nix-mode
-  :custom (add-hook 'nix-mode-hook #'eglot-ensure))
+  :hook (nix-mode . eglot-ensure))
 #+end_src
 ** Rust
 Try to use the package.
 #+begin_src emacs-lisp :tangle yes
-(add-to-list 'auto-mode-alist '("\\.rs\\'" rust-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
 (add-hook 'rust-ts-mode-hook #'eglot-ensure)
 #+end_src
 
@@ -171,8 +176,8 @@ Try to use the package.
 ** Org and agenda.
 #+begin_src emacs-lisp :tangle yes
 (use-package org
-  :config (add-hook 'org-mode-hook #'org-indent-mode)
-  :config (define-key global-map "\C-ca" 'org-agenda)
+  :hook (org-mode . org-indent-mode)
+  :bind ("C-c a" . org-agenda)
   :custom
   (org-ellipsis " …")
   (org-hide-emphasis-markers t)
@@ -203,7 +208,6 @@ Try to use the package.
 I dont know if I wanna keep it or not.
 #+begin_src emacs-lisp :tangle yes
 (use-package dashboard
-  :ensure t
   :config (dashboard-setup-startup-hook)
   :custom
   (dashboard-center-content t)
@@ -214,7 +218,7 @@ I dont know if I wanna keep it or not.
   ; (dashboard-set-file-icons (display-graphic-p))
   ; (dashboard-set-heading-icons (display-graphic-p))
   (dashboard-agenda-time-string-format "%a %e de %b %t")
-  (dashboard-items (list (cons 'agenda 10) (cons 'recents 5) (cons 'bookmarks 3)))
+  (dashboard-items '((agenda . 10) (recents . 5) (bookmarks . 3)))
   (dashboard-agenda-prefix-format "%i %s")
   (dashboard-agenda-sort-strategy '(time-up)))
 #+end_src

@@ -6,7 +6,7 @@
     emacs-overlay.url = "github:nix-community/emacs-overlay";
     flake-utils.url = "github:numtide/flake-utils";
     from-elisp = {
-      url = "github:talyz/fromElisp";
+      url = "github:o-santi/from-elisp";
       flake = false;
     };
   };

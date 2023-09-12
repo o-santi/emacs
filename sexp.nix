@@ -21,6 +21,8 @@ pkgs: rec {
         "${sexp.value}"
       else if type == "function" then
         "#'${sexp-to-str sexp.value}"
+      else if type == "record" then
+        "#s${sexp-to-str sexp.value}"
       else if type == "dot" then
         "."
       else
