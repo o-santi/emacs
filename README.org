@@ -1,7 +1,7 @@
 #+TITLE: My emacs literate config
 #+AUTHOR: Leonardo Santiago
 
-This org file is used as the configuration source for my emacs. Additional packages may be found at [[emacs.nix]]. Though they are declared in emacs lisp, they actually are completely managed by the `nix` package manager, by parsing the declarations on this file and using them to fetch the packages, which I think is really cool.
+This org file is used as the configuration source for my emacs. Additional packages may be found at [[emacs.nix]]. Though they are declared in emacs lisp, they actually are completely managed by the =nix= package manager, by parsing the declarations on this file and using them to fetch the packages, which I think is really cool.
 
 In order to run this emacs configuration locally, all you need to do is run the following command:
 #+begin_src shell
