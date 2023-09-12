@@ -56,6 +56,22 @@
         "type": "github"
       }
     },
+    "from-elisp": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1649625973,
+        "narHash": "sha256-y/7IsibjBGY3uUN9K/VMKPTVAbgsV0Xdi8Hnv6Nq76E=",
+        "owner": "talyz",
+        "repo": "fromElisp",
+        "rev": "edd1301d1fc35440ae6c918ca92039233e3d770f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "talyz",
+        "repo": "fromElisp",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1693158576,
@@ -108,6 +124,7 @@
       "inputs": {
         "emacs-overlay": "emacs-overlay",
         "flake-utils": "flake-utils_2",
+        "from-elisp": "from-elisp",
         "nixpkgs": "nixpkgs_2"
       }
     },

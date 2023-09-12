@@ -1,0 +1,219 @@
+#+TITLE: My emacs literate config
+#+AUTHOR: Leonardo Santiago
+
+This org file is used as the configuration source for my emacs. Additional packages may be found at [[emacs.nix]]. Though they are declared in emacs lisp, they actually are completely managed by the `nix` package manager, by parsing the declarations on this file and using them to fetch the packages, which I think is really cool.
+
+In order to run this emacs configuration locally, all you need to do is run the following command:
+#+begin_src shell
+nix run github:o-santi/emacs
+#+end_src
+Though you probably shouldn't, because it will most likely build all of emacs from scratch (which takes a little while). 
+
+* Core
+** Remove bar mode
+#+begin_src emacs-lisp :tangle yes
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+
+(setq ring-bell-function 'ignore)
+#+end_src
+
+** Theme and font
+#+begin_src emacs-lisp :tangle yes
+(load-theme 'tango-dark t)
+
+(set-face-attribute 'default nil
+  :family "Iosevka Nerd Font"
+  :width 'normal
+  :weight 'normal)
+#+end_src
+
+** Backups
+#+begin_src emacs-lisp :tangle yes
+(setq
+   backup-by-copying t      ; don't clobber symlinks
+   backup-directory-alist '(("." . "~/.saves/"))    ; don't litter my fs tree
+   delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2
+   version-control t)
+#+end_src
+
+** Background opacity
+Remove background on terminal, and add transparency on GUI
+#+begin_src emacs-lisp :tangle yes
+(defun on-after-init ()
+  (unless (display-graphic-p (selected-frame))
+    (set-face-background 'default "unspecified-bg" (selected-frame))))
+
+(add-hook 'window-setup-hook 'on-after-init)
+(set-frame-parameter nil 'alpha-background 90)
+(add-to-list 'default-frame-alist (cons 'alpha-background 90))
+#+end_src
+
+* Utility
+** TODO Icons
+Make =all-the-icons= font work with nix flake config.
+#+begin_src emacs-lisp :tangle yes
+(use-package all-the-icons
+  :disable
+  :if (display-graphic-p))
+
+(use-package all-the-icons-completion
+  :disable
+  :if (display-graphic-p)
+  :after all-the-icons
+  :hook (marginalia-mode . all-the-icons-completion-mode))
+#+end_src
+** Magit
+Configurations for magit
+*** Colorize buffer
+#+begin_src emacs-lisp :tangle yes
+(defun color-buffer (proc &rest args)
+  (interactive)
+  (with-current-buffer (process-buffer proc)
+    (read-only-mode -1)
+    (ansi-color-apply-on-region (point-min) (point-max))
+    (read-only-mode 1)))
+#+end_src
+
+*** Use Magit
+#+begin_src emacs-lisp :tangle yes
+(use-package magit
+  :config (advice-add 'magit-process-filter :after #'color-buffer))
+#+end_src
+** Vertico, Orderless, Marginalia
+Pretty minibuffer support
+#+begin_src emacs-lisp :tangle yes
+  (use-package vertico
+    :config (vertico-mode))
+
+  (use-package orderless
+    :custom
+    (completion-styles '(orderless basic))
+    (completion-category-defaults nil)
+    (completion-category-overrides '((file (styles basic partial-completion)))))
+
+  (use-package marginalia
+    :config (marginalia-mode))
+
+  (use-package ctrlf
+    :config (ctrlf-mode +1))
+#+end_src
+** Helpful and which key
+Better help defaults
+#+begin_src emacs-lisp :tangle yes
+(use-package helpful
+  :config (global-set-key (kbd "C-h f") #'helpful-callable)
+  :config (global-set-key (kbd "C-h v") #'helpful-variable)
+  :config (global-set-key (kbd "C-h x") #'helpful-command))
+
+(use-package which-key
+  :config (which-key-mode))
+#+end_src
+** Eglot
+Language server support. Already comes installed but used to configure additional language servers.
+#+begin_src emacs-lisp :tangle yes
+(use-package eglot
+  :config (add-to-list 'eglot-server-programs (cons 'nix-mode '("nil"))))
+#+end_src
+
+** Corfu
+Completion popup system
+#+begin_src emacs-lisp :tangle yes
+(use-package corfu
+  :config (global-corfu-mode)
+  :custom
+  (corfu-auto t)
+  (corfu-cycle t)
+  (corfu-separator ?\s)
+  (corfu-quit-no-match t))
+#+end_src
+** Flycheck
+#+begin_src emacs-lisp :tangle yes
+(use-package flycheck
+  :config (global-flycheck-mode)
+  :custom
+  (flycheck-pylintrc "~/mx/mixrank/etc/pylint/default.rc"))
+#+end_src
+** Vterm
+#+begin_src emacs-lisp :tangle yes
+(use-package vterm)
+#+end_src
+* Languages
+I try to mostly use the new Treesitter modes, which comes builtin with the new emacs 29.
+** Python
+The package already comes builtin, so we only instantiate it to define the hooks and remap the default package for the new one.
+#+begin_src emacs-lisp :tangle yes
+(add-to-list 'major-mode-remap-alist (cons 'python-mode #'python-ts-mode))
+(add-hook 'python-ts-mode-hook #'eglot-ensure)
+(add-hook 'python-ts-mode-hook #'flycheck-mode)
+#+end_src
+
+** Nix
+#+begin_src emacs-lisp :tangle yes
+(use-package nix-mode
+  :hook (nix-mode . eglot-ensure))
+#+end_src
+** Rust
+Try to use the package.
+#+begin_src emacs-lisp :tangle yes
+(add-to-list 'auto-mode-alist '("\\.rs\\'" rust-ts-mode))
+(add-hook 'rust-ts-mode-hook #'eglot-ensure)
+#+end_src
+
+** Markdown
+#+begin_src emacs-lisp :tangle yes
+(use-package markdown-mode
+  :mode "\\.md\\'")
+#+end_src
+* Personal
+** Org and agenda.
+#+begin_src emacs-lisp :tangle yes
+(use-package org
+  :hook (org-mode . org-indent-mode)
+  :config (define-key global-map "\C-ca" 'org-agenda)
+  :custom
+  (org-ellipsis " …")
+  (org-hide-emphasis-markers t)
+  (org-fontify-quote-and-verse-blocks t)
+  (org-image-actual-width nil)
+  (org-indirect-buffer-display 'other-window)
+  (org-confirm-babel-evaluate nil)
+  (org-edit-src-content-indentation 0)
+  (org-agenda-files '("~/agenda.org"))
+  (org-agenda-window-setup 'current-window)
+  (org-agenda-restore-windows-after-quit t)
+  (org-agenda-block-separator nil)
+  (org-agenda-sticky t)
+  (org-agenda-time-grid
+      '((daily today require-timed)
+        ()
+        "......" "----------------"))
+  :config
+  (when (display-graphic-p)
+      (setq org-agenda-category-icon-alist
+       `(
+	 ("Trabalho" ,(list (all-the-icons-material "work")) nil nil :ascent center)
+	 ("Pessoal" ,(list (all-the-icons-material "account_box")) nil nil :ascent center)
+	 ("Faculdade" ,(list (all-the-icons-material "school")) nil nil :ascent center)))))
+#+end_src
+** TODO Dashboard
+I dont know if I wanna keep it or not.
+#+begin_src emacs-lisp :tangle yes
+(use-package dashboard
+  :ensure t
+  :config (dashboard-setup-startup-hook)
+  :custom
+  (dashboard-center-content t)
+  (dashboard-show-shortcuts nil)
+  (dashboard-icon-type 'all-the-icons)
+  (dashboard-startup-banner 3)
+  (dashboard-set-footer nil)
+  (dashboard-set-file-icons (display-graphic-p))
+  (dashboard-set-heading-icons (display-graphic-p))
+  (dashboard-agenda-time-string-format "%a %e de %b %t")
+  (dashboard-items (list (cons 'agenda 10) (cons 'recents 5) (cons 'bookmarks 3)))
+  (dashboard-agenda-prefix-format "%i %s")
+  (dashboard-agenda-sort-strategy '(time-up)))
+#+end_src
