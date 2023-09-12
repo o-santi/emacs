@@ -1,7 +1,10 @@
 { pkgs, from-elisp }:
-let 
-  pkgs-outside-emacs = [
+let
+  fonts = [
     pkgs.emacs-all-the-icons-fonts
+    (pkgs.nerdfonts.override { fonts = ["Iosevka"]; })
+  ];
+  outside-emacs = [
     pkgs.python311Packages.python-lsp-server
     pkgs.pylint
     pkgs.nil
@@ -22,5 +25,5 @@ in
       tree-sitter-rust
       tree-sitter-python
     ]))
-  ] ++ pkgs-outside-emacs;
+  ] ++ outside-emacs ++ fonts;
 })

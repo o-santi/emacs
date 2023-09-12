@@ -53,7 +53,7 @@ Remove background on terminal, and add transparency on GUI
 
 * Utility
 ** TODO Icons
-Make =all-the-icons= font work with nix flake config.
+This is currently disabled because I can't for the life of me make all-the-icons work with the flakes format. I still wanna do it properly, because it is one of those things that never work in any system.
 #+begin_src emacs-lisp :tangle yes
 (use-package all-the-icons
   :disable
@@ -63,7 +63,7 @@ Make =all-the-icons= font work with nix flake config.
   :disable
   :if (display-graphic-p)
   :after all-the-icons
-  :hook (marginalia-mode . all-the-icons-completion-mode))
+  :config (add-hook 'marginalia-mode-hook #'all-the-icons-completion-mode))
 #+end_src
 ** Magit
 Configurations for magit
@@ -153,7 +153,7 @@ The package already comes builtin, so we only instantiate it to define the hooks
 ** Nix
 #+begin_src emacs-lisp :tangle yes
 (use-package nix-mode
-  :hook (nix-mode . eglot-ensure))
+  :custom (add-hook 'nix-mode-hook #'eglot-ensure))
 #+end_src
 ** Rust
 Try to use the package.
@@ -171,7 +171,7 @@ Try to use the package.
 ** Org and agenda.
 #+begin_src emacs-lisp :tangle yes
 (use-package org
-  :hook (org-mode . org-indent-mode)
+  :config (add-hook 'org-mode-hook #'org-indent-mode)
   :config (define-key global-map "\C-ca" 'org-agenda)
   :custom
   (org-ellipsis " …")
