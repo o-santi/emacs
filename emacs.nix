@@ -1,8 +1,9 @@
 { pkgs, from-elisp }:
 let
   fonts = [
-    pkgs.emacs-all-the-icons-fonts
-    (pkgs.nerdfonts.override { fonts = ["Iosevka"]; })
+  #  pkgs.emacs-all-the-icons-fonts
+  #  (pkgs.nerdfonts.override { fonts = ["Iosevka"]; })
+
   ];
   outside-emacs = [
     pkgs.python311Packages.python-lsp-server
