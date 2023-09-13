@@ -59,11 +59,11 @@
     "from-elisp": {
       "flake": false,
       "locked": {
-        "lastModified": 1694549282,
-        "narHash": "sha256-feT5mbCAb19c7rvNTIDidWkd9brPowm58nCEuEvPRPw=",
+        "lastModified": 1694631482,
+        "narHash": "sha256-fTdDUf+ITtLK/zHWDa5RCZdUj1qT/carlHrHVPuUxlo=",
         "owner": "o-santi",
         "repo": "from-elisp",
-        "rev": "9f1dd2a949603fabe88b6bb3ee4859ecde6a9c9f",
+        "rev": "3177e75d727232a9301822742f4d0bd23bb277c6",
         "type": "github"
       },
       "original": {

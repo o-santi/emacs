@@ -10,18 +10,19 @@ let
     pkgs.pylint
     pkgs.nil
   ];
-  from-org-mode = (pkgs.callPackage from-elisp {
-    inherit pkgs;
-  }).parseOrgModeBabelElisp;
-  lisp-to-str = (pkgs.callPackage ./sexp.nix pkgs).sexp-list-to-str "\n";
-  org-tangle = org-file: (lisp-to-str (from-org-mode (builtins.readFile org-file)));
-  org-file = ./README.org;
+  org-tangle-elisp-blocks = (pkgs.callPackage ./org.nix {inherit pkgs from-elisp;}).org-tangle ({ language, flags } :
+    let is-elisp = (language == "emacs-lisp") || (language == "elisp");
+        is-tangle = if flags ? ":tangle" then
+          flags.":tangle" == "yes" || flags.":tangle" == "y" else false;
+    in is-elisp && is-tangle
+  );
+  config-el = pkgs.writeText "config.el" (org-tangle-elisp-blocks (builtins.readFile ./README.org));
 in
 (pkgs.emacsWithPackagesFromUsePackage {
   package = pkgs.emacs-git.override { withGTK3 = true; };
-  config = org-file;
+  config = config-el;
   alwaysEnsure = true;
-  defaultInitFile = pkgs.writeText "default.el" (org-tangle org-file);
+  defaultInitFile = true;
   extraEmacsPackages = epkgs: with epkgs; [
     (treesit-grammars.with-grammars (g: with g; [
       tree-sitter-rust
