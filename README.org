@@ -3,8 +3,7 @@
 
 This org file is used as the configuration source for my emacs. Additional packages may be found at [[emacs.nix]] (those that cannot be directly installed from =use-package=). Though declared in emacs lisp, they actually are completely managed by the =nix= package manager, by parsing the declarations on this file and using them to fetch the packages, which I think is really cool.
 
-This makes it such that it is trivial to handle complex configurations, such as [[file:emacs.nix::python = pkgs.python3.override {][pylsp with plugins]] or [[file:emacs.nix::(treesit-grammars.with-grammars (g: with g; \[][treesitter grammars installation process]] (which usually envolves some stateful installations outside of emacs).
-
+This makes it such that it is trivial to handle complex configurations, such as pylsp with plugins or treesitter grammars installation process (which usually envolves some stateful installations outside of emacs).
 
 In order to run this emacs configuration locally, all you need to do is run the following command:
 #+begin_src shell
@@ -146,7 +145,7 @@ I try to mostly use the new Treesitter modes, which comes builtin with the new e
 ** Python
 The package already comes builtin, so we only instantiate it to define the hooks and remap the default package for the new one.
 
-It also relies on [[file:emacs.nix::packageOverrides = self: super: {][python lsp server with builtin ruff support]]
+It also relies on python lsp server with builtin ruff support.
 #+begin_src emacs-lisp :tangle yes
 (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
 (add-hook 'python-ts-mode-hook #'eglot-ensure)
