@@ -12,6 +12,7 @@ let
       python-lsp-server = super.python-lsp-server.overridePythonAttrs (oldAttrs: {
         propagatedBuildInputs = oldAttrs.propagatedBuildInputs or [] ++ [
           self.python-lsp-ruff
+          self.pylsp-mypy
         ];
       });
       python-lsp-ruff = super.python-lsp-ruff.overridePythonAttrs (oldAttrs: {
@@ -27,6 +28,11 @@ let
           lsprotocol
           tomli
         ];
+        doCheck = false;
+      });
+      pylsp-mypy = super.pylsp-mypy.overridePythonAttrs (old: {
+        propagatedBuildInputs = builtins.filter (dep: dep.pname != "python-lsp-server") old.propagatedBuildInputs;
+        postPatch = old.postPatch or "substituteInPlace setup.cfg --replace \"python-lsp-server>=1.7.0\" \"\" ";
         doCheck = false;
       });
     };
