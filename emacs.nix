@@ -7,38 +7,36 @@ let
   ];
   # taken from
   # https://github.com/NixOS/nixpkgs/issues/229337
-  python = pkgs.python3.override {
-    packageOverrides = self: super: {
-      python-lsp-server = super.python-lsp-server.overridePythonAttrs (oldAttrs: {
-        propagatedBuildInputs = oldAttrs.propagatedBuildInputs or [] ++ [
-          self.python-lsp-ruff
-          self.pylsp-mypy
-        ];
-      });
-      python-lsp-ruff = super.python-lsp-ruff.overridePythonAttrs (oldAttrs: {
-        postPatch = oldAttrs.postPatch or '''' + ''
-          sed -i '/python-lsp-server/d' pyproject.toml
-        '';
+  # python = pkgs.python3.override {
+  #   packageOverrides = self: super: {
+  #     python-lsp-server = super.python-lsp-server.overridePythonAttrs (oldAttrs: {
+  #       propagatedBuildInputs = oldAttrs.propagatedBuildInputs or [] ++ [
+  #         self.python-lsp-ruff
+  #       ];
+  #     });
+  #     python-lsp-ruff = super.python-lsp-ruff.overridePythonAttrs (oldAttrs: {
+  #       postPatch = oldAttrs.postPatch or '''' + ''
+  #         sed -i '/python-lsp-server/d' pyproject.toml
+  #       '';
       
-        nativeBuildInputs = with super; [
-          setuptools          
-        ];
+  #       nativeBuildInputs = with super; [
+  #         setuptools          
+  #       ];
 
-        propagatedBuildInputs = with super; [
-          lsprotocol
-          tomli
-        ];
-        doCheck = false;
-      });
-      pylsp-mypy = super.pylsp-mypy.overridePythonAttrs (old: {
-        propagatedBuildInputs = builtins.filter (dep: dep.pname != "python-lsp-server") old.propagatedBuildInputs;
-        postPatch = old.postPatch or "substituteInPlace setup.cfg --replace \"python-lsp-server>=1.7.0\" \"\" ";
-        doCheck = false;
-      });
-    };
-  };
+  #       propagatedBuildInputs = with super; [
+  #         lsprotocol
+  #         tomli
+  #       ];
+  #       doCheck = false;
+  #     });
+  #   };
+  # };
   outside-emacs = [
-    python.pkgs.python-lsp-server
+    (pkgs.python3.withPackages (p: (with p; [
+      python-lsp-server
+      python-lsp-ruff
+      pylsp-mypy
+    ])))
     pkgs.nil
   ];
   org-tangle-elisp-blocks = (pkgs.callPackage ./org.nix {inherit pkgs from-elisp;}).org-tangle ({ language, flags } :
