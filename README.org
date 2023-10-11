@@ -7,7 +7,7 @@ This makes it such that it is trivial to handle complex configurations, such as 
 
 In order to run this emacs configuration locally, all you need to do is run the following command:
 #+begin_src shell
-nix run github:o-santi/emacs
+nix run github:o-santi/emacs --experimental-features "nix-command"
 #+end_src
 Though you probably shouldn't, because it will most likely build all of emacs from scratch (which takes a little while).
 
@@ -52,7 +52,7 @@ Remove background on terminal, and add transparency on GUI
     (set-face-background 'default "unspecified-bg" (selected-frame))))
 
 (add-hook 'window-setup-hook 'on-after-init)
-(set-frame-parameter nil 'alpha-background 90)
+(set-frame-parameter nil 'alpha-background 70)
 (add-to-list 'default-frame-alist '(alpha-background . 90))
 #+end_src
 
