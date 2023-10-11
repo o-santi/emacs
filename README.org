@@ -53,7 +53,7 @@ Remove background on terminal, and add transparency on GUI
 
 (add-hook 'window-setup-hook 'on-after-init)
 (set-frame-parameter nil 'alpha-background 70)
-(add-to-list 'default-frame-alist '(alpha-background . 90))
+(add-to-list 'default-frame-alist '(alpha-background . 70))
 #+end_src
 
 * Utility
