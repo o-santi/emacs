@@ -213,11 +213,11 @@ I dont know if I wanna keep it or not.
   :custom
   (dashboard-center-content t)
   (dashboard-show-shortcuts nil)
-  ; (dashboard-icon-type 'all-the-icons) # disable dashboard icons for now
+  (dashboard-icon-type 'all-the-icons) # disable dashboard icons for now
   (dashboard-startup-banner 3)
   (dashboard-set-footer nil)
-  ; (dashboard-set-file-icons (display-graphic-p))
-  ; (dashboard-set-heading-icons (display-graphic-p))
+  (dashboard-set-file-icons (display-graphic-p))
+  (dashboard-set-heading-icons (display-graphic-p))
   (dashboard-agenda-time-string-format "%a %e de %b %t")
   (dashboard-items '((agenda . 10) (recents . 5) (bookmarks . 3)))
   (dashboard-agenda-prefix-format "%i %s")
