@@ -7,9 +7,11 @@ This makes it such that it is trivial to handle complex configurations, such as 
 
 In order to run this emacs configuration locally, all you need to do is run the following command:
 #+begin_src shell
-nix run github:o-santi/emacs --experimental-features "nix-command"
+nix run github:o-santi/emacs --experimental-features "nix-command" --experimental-features
 #+end_src
 Though you probably shouldn't, because it will most likely build all of emacs from scratch (which takes a little while).
+
+You can also use it as a ~nixosModule~, in order to add additional packages like fonts.
 
 * Core
 ** Remove bar mode
@@ -57,15 +59,13 @@ Remove background on terminal, and add transparency on GUI
 #+end_src
 
 * Utility
-** TODO Icons
-This is currently disabled because I can't for the life of me make all-the-icons work with the flakes format. I still wanna do it properly, because it is one of those things that never work in any system.
+** Icons
+Works through nixosModules.
 #+begin_src emacs-lisp :tangle yes
 (use-package all-the-icons
-  :disable
   :if (display-graphic-p))
 
 (use-package all-the-icons-completion
-  :disable
   :if (display-graphic-p)
   :after all-the-icons
   :hook (marginalia-mode . all-the-icons-completion-mode))

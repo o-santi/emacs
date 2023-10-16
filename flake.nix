@@ -12,17 +12,9 @@
   };
 
   outputs = { self, nixpkgs, emacs-overlay, flake-utils, from-elisp }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [ emacs-overlay.overlays.default ];
-        };
-      in {
-        packages = {
-          default = pkgs.callPackage ./emacs.nix {
-            inherit pkgs from-elisp;
-          };
-        };
-      });
+    flake-utils.lib.eachDefaultSystem (system: {
+      nixosModules.default = (import ./emacs.nix) {
+        inherit from-elisp emacs-overlay;
+      };
+    });
 }
