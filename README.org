@@ -27,7 +27,7 @@ You can also use it as a ~nixosModule~, in order to add additional packages like
 
 ** Theme and font
 #+begin_src emacs-lisp :tangle yes
-(load-theme 'tango-dark t)
+(load-theme 'modus-vivendi-tinted t)
 
 (set-face-attribute 'default nil
   :family "Iosevka Nerd Font"
@@ -181,7 +181,7 @@ Try to use the package.
   :bind ("C-c a" . org-agenda)
   :custom
   (org-ellipsis " …")
-  (org-hide-emphasis-markers t)
+  (org-hide-emphasis-markers nil)
   (org-fontify-quote-and-verse-blocks t)
   (org-image-actual-width nil)
   (org-indirect-buffer-display 'other-window)
