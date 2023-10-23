@@ -59,17 +59,23 @@ Remove background on terminal, and add transparency on GUI
 #+end_src
 
 * Utility
-** Icons
+** All the Icons
 Works through nixosModules.
 #+begin_src emacs-lisp :tangle yes
 (use-package all-the-icons
-  :if (display-graphic-p))
+  :if (and (display-graphic-p) @isnixosmodule@))
 
 (use-package all-the-icons-completion
-  :if (display-graphic-p)
+  :if (and (display-graphic-p) @isnixosmodule@)
   :after all-the-icons
   :hook (marginalia-mode . all-the-icons-completion-mode))
-
+#+end_src
+** Direnv
+To integrate with nix shells.
+#+begin_src emacs-lisp :tangle yes
+(use-package direnv
+  :custom (direnv-always-show-summary nil)
+  :config (direnv-mode))
 #+end_src
 ** Magit
 Configurations for magit
@@ -205,19 +211,20 @@ Try to use the package.
   ;; 	 ("Faculdade" ,(list (all-the-icons-material "school")) nil nil :ascent center))))
   )
 #+end_src
-** TODO Dashboard
+** Dashboard
 I dont know if I wanna keep it or not.
 #+begin_src emacs-lisp :tangle yes
 (use-package dashboard
-  :config (dashboard-setup-startup-hook)
+  :config
+  (dashboard-setup-startup-hook)
   :custom
   (dashboard-center-content t)
   (dashboard-show-shortcuts nil)
   (dashboard-icon-type 'all-the-icons)
   (dashboard-startup-banner 3)
   (dashboard-set-footer nil)
-  (dashboard-set-file-icons (display-graphic-p))
-  (dashboard-set-heading-icons (display-graphic-p))
+  (dashboard-set-file-icons (and (display-graphic-p) @isnixosmodule@))
+  (dashboard-set-heading-icons (and (display-graphic-p) @isnixosmodule@))
   (dashboard-agenda-time-string-format "%a %e de %b %t")
   (dashboard-items '((agenda . 10) (recents . 5) (bookmarks . 3)))
   (dashboard-agenda-prefix-format "%i %s")

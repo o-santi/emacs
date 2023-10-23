@@ -1,5 +1,9 @@
-{ from-elisp, emacs-overlay } : { pkgs, ... }:
+{ from-elisp, emacs-overlay, nixpkgs, system } : { is-nixos-module } :
 let
+  pkgs = import nixpkgs {
+    inherit system;
+    overlays = [ emacs-overlay.overlays.default ];
+  };
   outside-emacs = [
     (pkgs.python3.withPackages (p: (with p; [
       python-lsp-server
@@ -14,27 +18,24 @@ let
           flags.":tangle" == "yes" || flags.":tangle" == "y" else false;
     in is-elisp && is-tangle
   );
-  config-el = pkgs.writeText "config.el" (org-tangle-elisp-blocks (builtins.readFile ./README.org));
-  emacs = (pkgs.emacsWithPackagesFromUsePackage {
-    package = pkgs.emacs-git.override { withGTK3 = true; };
-    config = config-el;
-    alwaysEnsure = true;
-    defaultInitFile = true;
-    extraEmacsPackages = epkgs: with epkgs; [
-      (treesit-grammars.with-grammars (g: with g; [
-        tree-sitter-rust
-        tree-sitter-python
-      ]))
-    ] ++ outside-emacs;
-  });
-in
-{
-  config = {
-    nixpkgs.overlays = [ emacs-overlay.overlays.default ];
-    environment.systemPackages = [ emacs ];
-    fonts.packages = [
-      pkgs.emacs-all-the-icons-fonts
-      (pkgs.nerdfonts.override { fonts = ["Iosevka"]; })
-    ];
+  config-el = pkgs.substituteAll {
+    name = "default.el";
+    isnixosmodule = if is-nixos-module then "t" else "nil";
+    src = pkgs.writeText "config.el" (org-tangle-elisp-blocks (builtins.readFile ./README.org));
   };
-}
+in
+(pkgs.emacsWithPackagesFromUsePackage {
+  package = pkgs.emacs-git.override { withGTK3 = true; };
+  config = config-el; 
+  alwaysEnsure = true;
+  defaultInitFile = true;
+  extraEmacsPackages = epkgs: with epkgs; [
+    (treesit-grammars.with-grammars (g: with g; [
+      tree-sitter-rust
+      tree-sitter-python
+    ]))
+  ] ++ outside-emacs;
+  override = final: prev: {
+    final.buildInputs = prev.buildInputs ++ outside-emacs;
+  };
+})

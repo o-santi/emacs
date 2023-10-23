@@ -12,9 +12,31 @@
   };
 
   outputs = { self, nixpkgs, emacs-overlay, flake-utils, from-elisp }:
-    flake-utils.lib.eachDefaultSystem (system: {
-      nixosModules.default = (import ./emacs.nix) {
-        inherit from-elisp emacs-overlay;
-      };
-    });
+    flake-utils.lib.eachDefaultSystem (system:
+      let emacs = (import ./emacs.nix) {
+            inherit from-elisp emacs-overlay nixpkgs system;
+          };
+      in {
+        packages.default = emacs { is-nixos-module = false; };
+        nixosModules.default = {pkgs, ...}: {
+          config = {
+            nixpkgs.overlays = [ emacs-overlay.overlays.default ];
+            environment.systemPackages = [
+              (emacs { is-nixos-module = true; })
+              (pkgs.python3.withPackages (p: (with p; [
+                python-lsp-server
+                python-lsp-ruff
+                pylsp-mypy
+              ])))
+              pkgs.nil
+            ];
+            fonts.packages = with pkgs; [
+              emacs-all-the-icons-fonts
+              (nerdfonts.override { fonts = ["Iosevka"]; })
+            ];
+          };
+        };
+      }
+    );
 }
+  
