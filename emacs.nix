@@ -11,6 +11,7 @@ let
       pylsp-mypy
     ])))
     pkgs.nil
+    pkgs.rust-analyzer
   ];
   org-tangle-elisp-blocks = (pkgs.callPackage ./org.nix {inherit pkgs from-elisp;}).org-tangle ({ language, flags } :
     let is-elisp = (language == "emacs-lisp") || (language == "elisp");

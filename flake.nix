@@ -29,6 +29,7 @@
                 pylsp-mypy
               ])))
               pkgs.nil
+              pkgs.rust-analyzer
             ];
             fonts.packages = with pkgs; [
               emacs-all-the-icons-fonts
