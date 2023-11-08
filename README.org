@@ -7,7 +7,7 @@ This makes it such that it is trivial to handle complex configurations, such as 
 
 In order to run this emacs configuration locally, all you need to do is run the following command:
 #+begin_src shell
-nix run github:o-santi/emacs --experimental-features "nix-command" --experimental-features
+nix run github:o-santi/emacs --experimental-features "nix-command" --experimental-features "flakes"
 #+end_src
 Though you probably shouldn't, because it will most likely build all of emacs from scratch (which takes a little while).
 
@@ -27,7 +27,7 @@ You can also use it as a ~nixosModule~, in order to add additional packages like
 
 ** Theme and font
 #+begin_src emacs-lisp :tangle yes
-(load-theme 'modus-vivendi-tinted t)
+(load-theme 'modus-operandi-tinted t)
 
 (set-face-attribute 'default nil
   :family "Iosevka Nerd Font"
@@ -79,20 +79,10 @@ To integrate with nix shells.
 #+end_src
 ** Magit
 Configurations for magit
-*** Colorize buffer
-#+begin_src emacs-lisp :tangle yes
-(defun color-buffer (proc &rest args)
-  (interactive)
-  (with-current-buffer (process-buffer proc)
-    (read-only-mode -1)
-    (ansi-color-apply-on-region (point-min) (point-max))
-    (read-only-mode 1)))
-#+end_src
-
 *** Use Magit
 #+begin_src emacs-lisp :tangle yes
 (use-package magit
-  :config (advice-add 'magit-process-filter :after #'color-buffer))
+  :custom (magit-process-finish-apply-ansi-colors t))
 #+end_src
 ** Vertico, Orderless, Marginalia
 Pretty minibuffer support
@@ -148,6 +138,30 @@ Completion popup system
 ** Vterm
 #+begin_src emacs-lisp :tangle yes
 (use-package vterm)
+#+end_src
+** Compilation
+Add support for ansi escape codes in compilation
+#+begin_src emacs-lisp :tangle yes
+(use-package ansi-color
+  :hook (compilation-filter . ansi-color-compilation-filter))
+#+end_src
+** TODO Exwm
+#+begin_src emacs-lisp :tangle yes
+(use-package exwm
+  :config
+  :disable t
+  (setq exwm-workspace-number 9)
+  (add-hook 'exwm-update-class-hook
+          (lambda ()
+          (exwm-workspace-rename-buffer exwm-class-name)))
+  (require 'exwm-randr)
+  (setq exwm-randr-workspace-output-plist '((1 . "DP-1") (2 . "HDMI-1")))
+  (add-hook 'exwm-randr-screen-change-hook
+          (lambda ()
+            (start-process-shell-command
+             "xrandr" nil "xrandr --output DP-1 --mode 2560x1080 --rate 75.00 --pos 0x1080 --output HDMI-1 --mode 1920x1080 --pos 320x0")))
+  (require 'exwm-systemtray)
+  (exwm-systemtray-enable))
 #+end_src
 * Languages
 I try to mostly use the new Treesitter modes, which comes builtin with the new emacs 29.
