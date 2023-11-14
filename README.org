@@ -113,6 +113,12 @@ Better help defaults
 (use-package which-key
   :config (which-key-mode))
 #+end_src
+** Windows
+I wanna test out =winner-mode=
+#+begin_src emacs-lisp
+(use-package winner-mode
+  :config (winner-mode 1))
+#+end_src
 ** Bind key
 #+begin_src emacs-lisp :tangle yes
 (use-package bind-key)
@@ -225,22 +231,4 @@ Try to use the package.
   ;; 	 ("Faculdade" ,(list (all-the-icons-material "school")) nil nil :ascent center))))
   )
 #+end_src
-** Dashboard
-I dont know if I wanna keep it or not.
-#+begin_src emacs-lisp :tangle yes
-(use-package dashboard
-  :config
-  (dashboard-setup-startup-hook)
-  :custom
-  (dashboard-center-content t)
-  (dashboard-show-shortcuts nil)
-  (dashboard-icon-type 'all-the-icons)
-  (dashboard-startup-banner 3)
-  (dashboard-set-footer nil)
-  (dashboard-set-file-icons (and (display-graphic-p) @isnixosmodule@))
-  (dashboard-set-heading-icons (and (display-graphic-p) @isnixosmodule@))
-  (dashboard-agenda-time-string-format "%a %e de %b %t")
-  (dashboard-items '((agenda . 10) (recents . 5) (bookmarks . 3)))
-  (dashboard-agenda-prefix-format "%i %s")
-  (dashboard-agenda-sort-strategy '(time-up)))
-#+end_src
+
