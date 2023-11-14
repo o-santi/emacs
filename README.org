@@ -117,7 +117,7 @@ Better help defaults
 I wanna test out =winner-mode=
 #+begin_src emacs-lisp
 (use-package winner-mode
-  :config (winner-mode 1))
+  :config (winner-mode))
 #+end_src
 ** Bind key
 #+begin_src emacs-lisp :tangle yes
@@ -231,4 +231,11 @@ Try to use the package.
   ;; 	 ("Faculdade" ,(list (all-the-icons-material "school")) nil nil :ascent center))))
   )
 #+end_src
-
+** Email
+Trying to use mu4e
+#+begin_src emacs-lisp
+(setq epg-pinentry-mode 'loopback)
+#+end_src
+#+begin_src emacs-lisp
+(use-package mu4e)
+#+end_src
