@@ -239,11 +239,11 @@ Trying to use mu4e
 Helper functions, to try to discover which mail pertains to which account.
 #+begin_src emacs-lisp :tangle yes
 (defun personal-p (msg)
-  (mu4e-message-contact-field-matches msg :to "leonardo.ribeiro.santiago@gmail.com"))
+  (string-prefix-p "/personal/" (mu4e-message-field msg :maildir)))
 (defun university-p (msg)
-  (mu4e-message-contact-field-matches msg :to "leonardors@dcc.ufrj.br"))
+  (string-prefix-p "/university/" (mu4e-message-field msg :maildir)))
 (defun work-p (msg)
-  (mu4e-message-contact-field-matches msg :to "leonardo@mixrank.com"))
+  (string-prefix-p "/work/" (mu4e-message-field msg :maildir)))
 #+end_src
 Actual mu4e definition
 #+begin_src emacs-lisp :tangle yes
@@ -256,6 +256,12 @@ Actual mu4e definition
   (mu4e-update-interval 60)
   (mu4e-get-mail-command "mbsync -a")
   (mu4e-compose-context-policy 'pick-first)
+  (mu4e-headers-fields
+   '((:human-date . 10)
+     (:flags . 6)
+     (:topic . 10)
+     (:from-or-to . 22)
+     (:subject . nil)))
   (mu4e-drafts-folder (lambda (msg)
                         (cond
                          ((personal-p msg)   "/personal/[Gmail]/Rascunhos")
@@ -280,7 +286,7 @@ Actual mu4e definition
   (add-to-list 'mu4e-header-info-custom
                '(:topic 
                  :name "Topic"
-                 :shortname "T"
+                 :shortname "Topic"
                  :function (lambda (msg)
                              (cond
                               ((personal-p msg)   "Personal")
