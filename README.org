@@ -200,7 +200,20 @@ Try to use the package.
   :mode "\\.md\\'")
 #+end_src
 * Personal
-** Org and agenda.
+** RSS reader 
+#+begin_src emacs-lisp :tangle yes
+(use-package elfeed
+  :bind ("C-c r e" . elfeed)
+  :custom
+  (elfeed-feeds '("https://planet.emacslife.com/atom.xml"
+                  "https://fasterthanli.me/index.xml"
+                  "https://nullprogram.com/feed/"
+                  "https://without.boats/index.xml"
+                  "https://smallcultfollowing.com/babysteps/atom.xml"
+                  "https://surma.dev/index.xml")))
+#+end_src
+
+** Org mode and agenda.
 #+begin_src emacs-lisp :tangle yes
 (use-package org
   :hook (org-mode . org-indent-mode)
@@ -250,14 +263,14 @@ Actual mu4e definition
 (use-package mu4e
   :bind ("C-c m" . mu4e)
   :custom
+  (read-mail-command 'mu4e)
   (mu4e-index-cleanup nil)
   (mu4e-index-lazy-check t)
   (mu4e-use-fancy-chars (display-graphic-p))
   (mu4e-confirm-quit nil)
   (mu4e-change-filenames-when-moving t)
-  (mu4e-update-interval 60)
+  (mu4e-update-interval (* 5 60))
   (mu4e-get-mail-command "parallel mbsync ::: personal work university")
-  (mu4e-compose-context-policy 'pick-first)
   (mu4e-headers-fields
    '((:human-date . 10)
      (:flags . 6)
@@ -299,14 +312,3 @@ Actual mu4e definition
                               ((university-p msg) "University")
                               ((work-p msg)       "Work"))))))
 #+end_src
-Alerting in the modeline. It is possible to use it to send desktop notifications using =libnotify= but I think that is kind of annoying so I don't use it. Feel free to use it though.
-#+begin_src emacs-lisp :tangle yes
-(use-package mu4e-alert
-  :after mu4e
-  :bind ("<f5>" . (lambda ()
-                    (interactive)
-                    (mu4e-update-mail-and-index 1)
-                    (mu4e-alert-enable-mode-line-display)))
-  :config
-  (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display))
-#+end_src 
