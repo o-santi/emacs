@@ -283,6 +283,10 @@ Actual mu4e definition
                          ((university-p msg) "/university/[Gmail]/Lixeira")
                          ((work-p msg)       "/work/[Gmail]/Trash"))))
   :config
+  (add-to-list 'mu4e-bookmarks
+               '(:name "Inboxes"
+                 :query "m:/personal/Inbox OR m:/work/Inbox OR m:/university/Inbox"
+                 :key ?i))
   (add-to-list 'mu4e-header-info-custom
                '(:topic 
                  :name "Topic"
